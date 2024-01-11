@@ -1,0 +1,146 @@
+name: Test Runner
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Workflow run id
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  revive-tests:
+    name: Revive Adserver tests
+
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-branch:
+          - master
+#          - PHP-8.3
+#          - PHP-8.2
+#          - PHP-8.1
+
+        db-type:
+          - mysqli
+          - pgsql
+
+        include:
+          - db-user: postgres
+          - db-port: 5432
+          - db-type: mysqli
+            table-type: myisam
+            db-user: root
+            db-port: 3306
+
+    services:
+      postgres:
+        image: ${{ ( matrix.db-type == 'pgsql' ) && 'postgres:latest' || '' }}
+        env:
+          POSTGRES_PASSWORD: secret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      mysql:
+        image: ${{ ( matrix.db-type != 'pgsql' ) && 'mysql:5.7' || '' }}
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE: test_revive
+          MYSQL_ROOT_PASSWORD: secret
+        options: >-
+          --health-cmd "mysqladmin ping" 
+          --health-interval 5s 
+          --health-timeout 2s
+          --health-retries 5
+        ports:
+          - 3306:3306
+
+    env:
+      PHP: /opt/${{ matrix.php-branch }}/bin/php
+
+    steps:
+      - name: Install PHP from artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          name: ${{ matrix.php-branch }}
+          path: /opt/${{ matrix.php-branch }}
+          workflow: ${{ github.event.workflow.id || 'CI' }}
+          run_id: ${{ github.event.workflow_run.id || inputs.run_id }}
+
+      - name: Enable PHP and install Composer
+        run: |
+          sudo chmod +x $PHP
+          $PHP -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          $PHP -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+          $PHP composer-setup.php
+          $PHP -r "unlink('composer-setup.php');"
+          sudo mv composer.phar /usr/local/bin/composer
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: revive-adserver/revive-adserver
+          ref: master
+
+      - name: Install dependencies with Composer
+        run: composer install --no-interaction --no-ansi --no-progress
+
+      - name: Generate configuration file
+        run: |
+          cat > devel.xml <<EOF
+          <tests>
+          <php>
+          <version name="php" executable="$PHP"/>
+          </php>
+          <database>
+          <version name="${{ matrix.db-type }}" db.type="${{ matrix.db-type }}" db.host="127.0.0.1" db.port="${{ matrix.db-port }}" db.username="${{ matrix.db-user }}" db.password="secret" db.name="test_revive" db.table.type="${{ matrix.table-type }}"/>
+          </database>
+          <audit>
+          <settings enabled="0"/>
+          </audit>
+          </tests>
+          EOF
+
+      - name: Install Java
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'zulu'
+          java-version: '21'
+
+      - name: Install ant 1.7
+        run: |
+          curl -s -O http://archive.debian.org/debian-archive/debian/pool/main/a/ant1.7/ant1.7_1.7.1-7_all.deb
+          curl -s -O http://archive.debian.org/debian-archive/debian/pool/main/a/ant1.7/ant1.7-optional_1.7.1-7_all.deb
+          sudo apt-get -y -qq remove ant
+          sudo apt-get -y -qq install libxerces2-java
+          sudo dpkg -i ant1.7_1.7.1-7_all.deb
+          sudo dpkg -i ant1.7-optional_1.7.1-7_all.deb
+          rm *.deb
+
+      - name: Run tests
+        run: ant test-all
+
+      - name: Publish report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          report_paths: 'build/test-reports/*.xml'
+          annotate_only: true
+

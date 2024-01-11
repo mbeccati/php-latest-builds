@@ -2,20 +2,21 @@ name: CI
 
 on:
   workflow_dispatch: ~
+  push: ~
 
 jobs:
   build-php-latest:
     name: Build latest PHP
 
-    runs-on: ubuntu-20.04
+    runs-on: ubuntu-22.04
 
     strategy:
       matrix:
         php-branch:
           - master
-          - PHP-8.3
-          - PHP-8.2
-          - PHP-8.1
+#          - PHP-8.3
+#          - PHP-8.2
+#          - PHP-8.1
 
     steps:
       - name: Checkout
@@ -24,7 +25,7 @@ jobs:
       - name: Setup
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq bison re2c
+          sudo apt-get install -y -qq bison re2c libpq-dev libcurl4-openssl-dev libonig-dev
 
       - name: Checkout PHP
         uses: actions/checkout@v4
@@ -37,7 +38,6 @@ jobs:
         working-directory: build
         env:
           PHP_DIR: /opt/${{ matrix.php-branch }}
-          PHP_CONF: --disable-all
         run: ../configure.sh
 
       - name: Build

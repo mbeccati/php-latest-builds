@@ -8,10 +8,7 @@ fi
 
 ./configure \
         --prefix=$PHP_DIR \
-        $PHP_CONF
-
-exit 0
-
+        $PHP_CONF \
         --enable-debug \
         --without-pear \
         --with-mysqli=mysqlnd \
