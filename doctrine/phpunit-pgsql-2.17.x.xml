@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/sebastianbergmann/phpunit/main/phpunit.xsd"
+         colors="true"
+         verbose="false"
+         failOnRisky="true"
+         convertDeprecationsToExceptions="true"
+         bootstrap="./tests/Doctrine/Tests/TestInit.php"
+>
+    <testsuites>
+        <testsuite name="Doctrine ORM Test Suite">
+            <directory>./tests/Doctrine/Tests/ORM</directory>
+        </testsuite>
+    </testsuites>
+
+    <groups>
+        <exclude>
+            <group>performance</group>
+            <group>locking_functional</group>
+        </exclude>
+    </groups>
+
+    <php>
+        <ini name="error_reporting" value="-1" />
+        <!-- "Real" test database -->
+        <var name="db_driver" value="pdo_pgsql"/>
+        <var name="db_host" value="127.0.0.1" />
+        <var name="db_port" value="5432"/>
+        <var name="db_user" value="postgres" />
+        <var name="db_password" value="secret" />
+        <var name="db_dbname" value="doctrine_tests" />
+        <!--<var name="db_event_subscribers" value="Doctrine\DBAL\Event\Listeners\OracleSessionInit">-->
+
+        <var name="privileged_db_driver" value="pdo_pgsql"/>
+        <var name="privileged_db_host" value="127.0.0.1" />
+        <var name="privileged_db_port" value="5432"/>
+        <var name="privileged_db_user" value="postgres" />
+        <var name="privileged_db_password" value="secret" />
+        <var name="privileged_db_dbname" value="postgres" />
+
+        <env name="COLUMNS" value="120"/>
+    </php>
+
+</phpunit>
