@@ -36,8 +36,41 @@ jobs:
           - 3.7.x
           - 4.0.x
 
+        db-type:
+          - sqlite
+          - pgsql
+          - mysql
+
     env:
       PHP: /opt/${{ matrix.php-branch }}/bin/php
+
+    services:
+      postgres:
+        image: ${{ ( matrix.db-type == 'pgsql' ) && 'postgres:latest' || '' }}
+        env:
+          POSTGRES_PASSWORD: secret
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+
+      mysql:
+        image: ${{ ( matrix.db-type == 'mysql' ) && 'mysql:latest' || '' }}
+        env:
+          MYSQL_USER: user
+          MYSQL_PASSWORD: secret
+          MYSQL_DATABASE: doctrine_tests_tmp
+          MYSQL_ROOT_PASSWORD: secret
+        options: >-
+          --health-cmd "mysqladmin ping"
+          --health-interval 5s
+          --health-timeout 2s
+          --health-retries 5
+        ports:
+          - 3306:3306
 
     steps:
       - name: Install PHP from artifact
@@ -62,6 +95,15 @@ jobs:
         with:
           repository: doctrine/dbal
           ref: ${{ matrix.doctrine-branch }}
+
+      - name: Checkout build configuration
+        uses: actions/checkout@v4
+        with:
+          path: build
+
+      - name: Copy build configuration
+        if: matrix.db-type != 'sqlite'
+        run: cp build/dbal/phpunit-${{ matrix.db-type }}.xml phpunit.xml
 
       - name: Install dependencies with Composer
         run: composer install

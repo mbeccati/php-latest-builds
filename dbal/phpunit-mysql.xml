@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<phpunit xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:noNamespaceSchemaLocation="https://raw.githubusercontent.com/sebastianbergmann/phpunit/main/phpunit.xsd"
+         colors="true"
+         beStrictAboutOutputDuringTests="true"
+         beStrictAboutTodoAnnotatedTests="true"
+         failOnRisky="true"
+         failOnWarning="true"
+>
+    <php>
+        <ini name="error_reporting" value="-1" />
+
+        <!-- Test connection parameters -->
+        <var name="db_driver" value="pdo_mysql"/>
+        <var name="db_host" value="127.0.0.1" />
+        <var name="db_port" value="3306"/>
+        <var name="db_user" value="root" />
+        <var name="db_password" value="secret" />
+        <var name="db_dbname" value="doctrine_tests" />
+        <!--<var name="db_event_subscribers" value="Doctrine\DBAL\Event\Listeners\OracleSessionInit">-->
+
+        <!-- Privileged user connection parameters. Used to create and drop the test database -->
+        <var name="tmpdb_driver" value="pdo_mysql"/>
+        <var name="tmpdb_host" value="127.0.0.1" />
+        <var name="tmpdb_port" value="3306"/>
+        <var name="tmpdb_user" value="root" />
+        <var name="tmpdb_password" value="secret" />
+        <var name="tmpdb_dbname" value="doctrine_tests_tmp" />
+    </php>
+
+    <testsuites>
+        <testsuite name="Doctrine DBAL Test Suite">
+            <directory>tests</directory>
+        </testsuite>
+    </testsuites>
+
+    <coverage>
+        <include>
+            <directory suffix=".php">src</directory>
+        </include>
+    </coverage>
+</phpunit>
