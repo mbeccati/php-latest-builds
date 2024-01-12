@@ -9,6 +9,7 @@ fi
 ./configure \
         --prefix=$PHP_DIR \
         $PHP_CONF \
+        --with-openssl \
         --enable-debug \
         --without-pear \
         --with-mysqli=mysqlnd \

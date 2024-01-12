@@ -14,9 +14,9 @@ jobs:
       matrix:
         php-branch:
           - master
-#          - PHP-8.3
-#          - PHP-8.2
-#          - PHP-8.1
+          - PHP-8.3
+          - PHP-8.2
+          - PHP-8.1
 
     steps:
       - name: Checkout
