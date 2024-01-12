@@ -16,7 +16,7 @@ permissions:
   actions: read
 
 jobs:
-  revive-tests:
+  test:
     name: Revive Adserver tests
 
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}

@@ -1,4 +1,4 @@
-name: PHPUnit
+name: Doctrine
 
 on:
   workflow_run:
@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   test:
-    name: PHPUnit tests
+    name: Doctrine tests
 
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
@@ -32,15 +32,9 @@ jobs:
           - PHP-8.2
           - PHP-8.1
 
-        phpunit-branch:
-          - main
-          - 10.5
-          - 9.6
-          - 8.5
-
-        exclude:
-          - phpunit-branch: main
-            php-branch: PHP-8.1
+        doctrine-branch:
+          - 2.17.x
+          - 3.0.x
 
     env:
       PHP: /opt/${{ matrix.php-branch }}/bin/php
@@ -66,14 +60,14 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-          repository: sebastianbergmann/phpunit
-          ref: ${{ matrix.phpunit-branch }}
+          repository: doctrine/orm
+          ref: ${{ matrix.doctrine-branch }}
 
       - name: Install dependencies with Composer
         run: composer install
 
       - name: Run tests
-        run: $PHP ./phpunit --log-junit junit.xml
+        run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit.xml
 
       - name: Publish report
         uses: mikepenz/action-junit-report@v4
