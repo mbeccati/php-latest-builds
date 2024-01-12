@@ -1,0 +1,77 @@
+name: DBAL
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Workflow run id
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  actions: read
+
+jobs:
+  test:
+    name: DBAL tests
+
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        php-branch:
+          - master
+          - PHP-8.3
+          - PHP-8.2
+          - PHP-8.1
+
+        doctrine-branch:
+          - 3.7.x
+          - 4.0.x
+
+    env:
+      PHP: /opt/${{ matrix.php-branch }}/bin/php
+
+    steps:
+      - name: Install PHP from artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          name: ${{ matrix.php-branch }}
+          path: /opt/${{ matrix.php-branch }}
+          workflow: ${{ github.event.workflow.id || 'CI' }}
+          run_id: ${{ github.event.workflow_run.id || inputs.run_id }}
+
+      - name: Enable PHP and install Composer
+        run: |
+          sudo chmod +x $PHP
+          $PHP -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
+          $PHP -r "if (hash_file('sha384', 'composer-setup.php') === 'e21205b207c3ff031906575712edab6f13eb0b361f2085f1f1237b7126d785e826a450292b6cfd1d64d92e6563bbde02') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
+          $PHP composer-setup.php
+          $PHP -r "unlink('composer-setup.php');"
+          sudo mv composer.phar /usr/local/bin/composer
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: doctrine/dbal
+          ref: ${{ matrix.doctrine-branch }}
+
+      - name: Install dependencies with Composer
+        run: composer install
+
+      - name: Run tests
+        run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit.xml
+
+      - name: Publish report
+        uses: mikepenz/action-junit-report@v4
+        if: success() || failure()
+        with:
+          report_paths: 'junit.xml'
+          annotate_only: true
