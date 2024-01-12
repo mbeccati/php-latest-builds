@@ -1,4 +1,4 @@
-name: Test Runner
+name: Revive Adserver
 
 on:
   workflow_run:
@@ -143,4 +143,3 @@ jobs:
         with:
           report_paths: 'build/test-reports/*.xml'
           annotate_only: true
-
