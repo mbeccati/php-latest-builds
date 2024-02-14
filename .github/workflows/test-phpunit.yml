@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   actions: read
+  checks: write
 
 jobs:
   test:
@@ -74,9 +75,27 @@ jobs:
       - name: Run tests
         run: $PHP ./phpunit --log-junit junit.xml
 
+      - name: Upload test result
+        if: success() || failure()
+        uses: actions/upload-artifact@v3
+        with:
+          name: test-results_${{ matrix.php-branch }}_${{ matrix.phpunit-branch }}
+          if-no-files-found: ignore
+          path: junit.xml
+          retention-days: 1
+
+  results:
+    name: Report
+    runs-on: ubuntu-latest
+    needs: test
+    if: success() || failure()
+    steps:
       - name: Publish report
-        uses: mikepenz/action-junit-report@v4
+        uses: dorny/test-reporter@v1
         if: success() || failure()
         with:
-          report_paths: 'junit.xml'
-          annotate_only: true
+          artifact: /test-results_(.*)_(.*)/
+          name: "$2 on $1"
+          path: '**/*.xml'
+          only-summary: true
+          reporter: java-junit
