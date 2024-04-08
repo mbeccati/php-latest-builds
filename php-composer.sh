@@ -1,11 +1,11 @@
-#!/bin/sh
+#!/bin/bash
 
-if [ -z "$PHP" ]; then
+if [[ -z "$PHP" || -z "$PHP_DIR" ]]; then
   echo "PHP env var missing"
   exit 1
 fi
 
-sudo chmod +x $PHP
+sudo chmod +x $PHP_DIR/bin/*
 
 EXPECTED_CHECKSUM="$($PHP -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
 $PHP -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"

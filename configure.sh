@@ -11,7 +11,7 @@ fi
         $PHP_CONF \
         --with-openssl \
         --enable-debug \
-        --without-pear \
+        --with-pear \
         --with-mysqli=mysqlnd \
         --with-pgsql=/usr \
         --enable-pdo \

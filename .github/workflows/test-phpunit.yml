@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   actions: read
+  checks: write
 
 jobs:
   test:
@@ -26,23 +27,39 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        php-branch:
-          - master
-          - PHP-8.3
-          - PHP-8.2
-          - PHP-8.1
-
         phpunit-branch:
           - main
           - 10.5
           - 9.6
           - 8.5
 
+        php-branch:
+          - master
+          - PHP-8.3
+          - PHP-8.2
+          - PHP-8.1
+
+        php-coverage:
+          - pcov
+          - xdebug
+          - none
+
         exclude:
           - phpunit-branch: main
             php-branch: PHP-8.1
+          - php-branch: master
+            php-coverage: pcov
+          - php-branch: master
+            php-coverage: xdebug
+          - php-branch: PHP-8.3
+            php-coverage: none
+          - php-branch: PHP-8.2
+            php-coverage: none
+          - php-branch: PHP-8.1
+            php-coverage: none
 
     env:
+      PHP_DIR: /opt/${{ matrix.php-branch }}
       PHP: /opt/${{ matrix.php-branch }}/bin/php
 
     steps:
@@ -71,12 +88,59 @@ jobs:
       - name: Install dependencies with Composer
         run: composer install
 
-      - name: Run tests
-        run: $PHP ./phpunit --log-junit junit.xml
+      - name: Install xdebug
+        if: matrix.php-coverage == 'xdebug'
+        run: |
+          $PHP_DIR/bin/pecl install xdebug
+          echo "zend_extension=xdebug.so" >> "${PHP_DIR}/lib/php.ini"
+          echo "XDEBUG_MODE=coverage" >> $GITHUB_ENV
 
-      - name: Publish report
-        uses: mikepenz/action-junit-report@v4
-        if: success() || failure()
+      - name: Install pcov
+        if: matrix.php-coverage == 'pcov'
+        run: |
+          $PHP_DIR/bin/pecl install pcov
+          echo "extension=pcov.so" >> "${PHP_DIR}/lib/php.ini"
+
+      - name: Run tests
+        run: $PHP ./phpunit --log-junit junit-${{ matrix.phpunit-branch }}-${{ matrix.php-branch }}-${{ matrix.php-coverage }}.xml
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always() # always run even if the previous step fails
         with:
-          report_paths: 'junit.xml'
-          annotate_only: true
+          name: test-results-${{ matrix.phpunit-branch }}-${{ matrix.php-branch }}-${{ matrix.php-coverage }}
+          path: 'junit-*.xml'
+          retention-days: 1
+
+  report:
+    name: Collect results
+
+    runs-on: ubuntu-latest
+
+    needs:
+      - test
+
+    if: always()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: sebastianbergmann/phpunit
+          ref: main
+
+      - name: Download Test Report
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          run_id: ${{ github.run_id }}
+          name: test-results-.*
+          name_is_regexp: true
+          if_no_artifact_found: warn
+
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Test suite results
+          path: '**/junit-*.xml'
+          reporter: java-junit
+          only-summary: true
