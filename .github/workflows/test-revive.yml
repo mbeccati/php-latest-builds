@@ -171,7 +171,7 @@ jobs:
           if_no_artifact_found: warn
 
       - name: Publish Test Report
-        uses: dorny/test-reporter@v1
+        uses: mbeccati/test-reporter@phpunit-support
         with:
           name: Revive Adserver Test results
           path: '**/build/test-reports/*.xml'

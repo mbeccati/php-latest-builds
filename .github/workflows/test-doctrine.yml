@@ -144,9 +144,10 @@ jobs:
           name: test-results-.*
           name_is_regexp: true
           if_no_artifact_found: warn
+          path: test-results
 
       - name: Publish Test Report
-        uses: dorny/test-reporter@v1
+        uses: mbeccati/test-reporter@phpunit-support
         with:
           name: Doctrine Test results
           path: '**/junit-*.xml'
