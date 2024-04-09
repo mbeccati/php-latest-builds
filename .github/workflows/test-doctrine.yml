@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   actions: read
+  checks: write
 
 jobs:
   test:
@@ -26,15 +27,15 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
+        doctrine-branch:
+          - 2.17.x
+          - 3.0.x
+
         php-branch:
           - master
           - PHP-8.3
           - PHP-8.2
           - PHP-8.1
-
-        doctrine-branch:
-          - 2.17.x
-          - 3.0.x
 
         db-type:
           - sqlite
@@ -44,8 +45,11 @@ jobs:
         exclude:
           - db-type: mysql # Errors re: collation
             doctrine-branch: 3.0.x
+          - php-branch: master # Not ready yet
+            doctrine-branch: 2.17.x
 
     env:
+      PHP_DIR: /opt/${{ matrix.php-branch }}
       PHP: /opt/${{ matrix.php-branch }}/bin/php
 
     services:
@@ -107,11 +111,44 @@ jobs:
         run: composer install
 
       - name: Run tests
-        run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit.xml
+        run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit-${{ matrix.doctrine-branch }}-${{ matrix.php-branch }}-${{ matrix.db-type }}.xml
 
-      - name: Publish report
-        uses: mikepenz/action-junit-report@v4
-        if: success() || failure()
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always() # always run even if the previous step fails
         with:
-          report_paths: 'junit.xml'
-          annotate_only: true
+          name: test-results-${{ matrix.doctrine-branch }}-${{ matrix.php-branch }}-${{ matrix.db-type }}
+          path: 'junit-*.xml'
+          retention-days: 1
+
+  report:
+    name: Collect results
+
+    runs-on: ubuntu-latest
+
+    needs:
+      - test
+
+    if: always()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: doctrine/orm
+
+      - name: Download Test Report
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          run_id: ${{ github.run_id }}
+          name: test-results-.*
+          name_is_regexp: true
+          if_no_artifact_found: warn
+
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Doctrine Test results
+          path: '**/junit-*.xml'
+          reporter: java-junit
+          only-summary: true

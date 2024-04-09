@@ -14,6 +14,7 @@ on:
 permissions:
   contents: read
   actions: read
+  checks: write
 
 jobs:
   test:
@@ -73,6 +74,7 @@ jobs:
           - 3306:3306
 
     env:
+      PHP_DIR: /opt/${{ matrix.php-branch }}
       PHP: /opt/${{ matrix.php-branch }}/bin/php
 
     steps:
@@ -136,9 +138,42 @@ jobs:
       - name: Run tests
         run: ant test-all
 
-      - name: Publish report
-        uses: mikepenz/action-junit-report@v4
-        if: success() || failure()
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always() # always run even if the previous step fails
         with:
-          report_paths: 'build/test-reports/*.xml'
-          annotate_only: true
+          name: test-results-${{ matrix.php-branch }}-${{ matrix.db-type }}
+          path: '**/build/test-*'
+          retention-days: 1
+
+  report:
+    name: Collect results
+
+    runs-on: ubuntu-latest
+
+    needs:
+      - test
+
+    if: always()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: revive-adserver/revive-adserver
+
+      - name: Download Test Report
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          run_id: ${{ github.run_id }}
+          name: test-results-.*
+          name_is_regexp: true
+          if_no_artifact_found: warn
+
+      - name: Publish Test Report
+        uses: dorny/test-reporter@v1
+        with:
+          name: Revive Adserver Test results
+          path: '**/build/test-reports/*.xml'
+          reporter: java-junit
+          only-summary: true
