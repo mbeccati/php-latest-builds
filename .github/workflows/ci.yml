@@ -50,7 +50,7 @@ jobs:
         run: sudo make install
 
       - name: Upload test report
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.php-branch }}
           path: /opt/${{ matrix.php-branch }}
