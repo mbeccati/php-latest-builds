@@ -64,7 +64,7 @@ jobs:
           - 5432:5432
 
       mysql:
-        image: ${{ ( matrix.db-type == 'mysql' ) && 'mysql:latest' || '' }}
+        image: ${{ ( matrix.db-type == 'mysql' ) && 'mysql:8.3' || '' }}
         env:
           MYSQL_USER: user
           MYSQL_PASSWORD: secret
