@@ -28,8 +28,8 @@ jobs:
       fail-fast: false
       matrix:
         doctrine-branch:
-          - 2.17.x
-          - 3.0.x
+          - 2.19.x
+          - 3.2.x
 
         php-branch:
           - master
@@ -44,9 +44,9 @@ jobs:
 
         exclude:
           - db-type: mysql # Errors re: collation
-            doctrine-branch: 3.0.x
+            doctrine-branch: 3.2.x
           - php-branch: master # Not ready yet
-            doctrine-branch: 2.17.x
+            doctrine-branch: 2.19.x
 
     env:
       PHP_DIR: /opt/${{ matrix.php-branch }}
