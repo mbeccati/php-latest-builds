@@ -28,7 +28,7 @@ jobs:
       fail-fast: false
       matrix:
         dbal-branch:
-          - 4.0.x
+          - 3.9.x
           - 4.1.x
 
         php-branch:
