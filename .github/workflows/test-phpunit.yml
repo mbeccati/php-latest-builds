@@ -29,12 +29,14 @@ jobs:
       matrix:
         phpunit-branch:
           - main
+          - 11.5
           - 10.5
           - 9.6
           - 8.5
 
         php-branch:
           - master
+          - PHP-8.4
           - PHP-8.3
           - PHP-8.2
           - PHP-8.1
@@ -47,6 +49,8 @@ jobs:
         exclude:
           - phpunit-branch: main
             php-branch: PHP-8.1
+          - phpunit-branch: main
+            php-branch: PHP-8.2
           - php-branch: master
             php-coverage: pcov
           - php-branch: master
