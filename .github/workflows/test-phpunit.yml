@@ -51,6 +51,8 @@ jobs:
             php-branch: PHP-8.1
           - phpunit-branch: main
             php-branch: PHP-8.2
+          - phpunit-branch: "11.5"
+            php-branch: PHP-8.1
           - php-branch: master
             php-coverage: pcov
           - php-branch: master
