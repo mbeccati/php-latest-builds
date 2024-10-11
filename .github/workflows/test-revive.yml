@@ -29,6 +29,7 @@ jobs:
       matrix:
         php-branch:
           - master
+          - PHP-8.4
           - PHP-8.3
           - PHP-8.2
           - PHP-8.1

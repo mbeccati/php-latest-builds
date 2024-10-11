@@ -29,10 +29,13 @@ jobs:
       matrix:
         dbal-branch:
           - 3.9.x
-          - 4.1.x
+          - 4.2.x
+          - 4.3.x
+          - 5.0.x
 
         php-branch:
           - master
+          - PHP-8.4
           - PHP-8.3
           - PHP-8.2
           - PHP-8.1
@@ -42,9 +45,9 @@ jobs:
           - pgsql
           - mysql
 
-        exclude:
-          - php-branch: master # Not ready yet
-            dbal-branch: 3.8.x
+#        exclude:
+#          - php-branch: master # Not ready yet
+#            dbal-branch: 3.8.x
 
     env:
       PHP_DIR: /opt/${{ matrix.php-branch }}
