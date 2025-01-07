@@ -22,7 +22,7 @@ jobs:
 
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       fail-fast: false
@@ -73,6 +73,11 @@ jobs:
       PHP: /opt/${{ matrix.php-branch }}/bin/php
 
     steps:
+      - name: Setup
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sqlite3 libicu74
+
       - name: Install PHP from artifact
         uses: dawidd6/action-download-artifact@v3
         with:
@@ -125,7 +130,7 @@ jobs:
   report:
     name: Collect results
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     needs:
       - test

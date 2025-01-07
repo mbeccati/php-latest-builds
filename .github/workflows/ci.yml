@@ -9,7 +9,7 @@ jobs:
   build-php-latest:
     name: Build latest PHP
 
-    runs-on: ubuntu-22.04
+    runs-on: ubuntu-24.04
 
     strategy:
       matrix:
@@ -27,7 +27,7 @@ jobs:
       - name: Setup
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq bison re2c libpq-dev libcurl4-openssl-dev libonig-dev
+          sudo apt-get install -y -qq bison re2c libpq-dev libcurl4-openssl-dev libonig-dev libsqlite3-dev
 
       - name: Checkout PHP
         uses: actions/checkout@v4
