@@ -22,7 +22,7 @@ jobs:
 
     if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     strategy:
       fail-fast: false
@@ -125,7 +125,7 @@ jobs:
   report:
     name: Collect results
 
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-22.04
 
     needs:
       - test
