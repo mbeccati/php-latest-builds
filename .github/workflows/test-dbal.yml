@@ -45,9 +45,15 @@ jobs:
           - pgsql
           - mysql
 
-#        exclude:
-#          - php-branch: master # Not ready yet
-#            dbal-branch: 3.8.x
+        exclude:
+          - dbal-branch: 4.3.x
+            php-branch: PHP-8.1
+          - dbal-branch: 4.3.x
+            php-branch: PHP-8.2
+          - dbal-branch: 5.0.x
+            php-branch: PHP-8.1
+          - dbal-branch: 5.0.x
+            php-branch: PHP-8.2
 
     env:
       PHP_DIR: /opt/${{ matrix.php-branch }}
