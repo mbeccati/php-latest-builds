@@ -105,7 +105,7 @@ jobs:
           path: build
 
       - name: Enable PHP and install Composer
-        run: build/php-composer.sh
+        run: build/php-setup.sh
 
       - name: Install dependencies with Composer
         run: composer install --no-interaction --no-ansi --no-progress

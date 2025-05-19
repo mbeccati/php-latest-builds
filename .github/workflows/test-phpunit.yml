@@ -64,9 +64,7 @@ jobs:
           - php-branch: master
             php-coverage: xdebug
           - php-branch: PHP-8.4
-            php-coverage: pcov
-          - php-branch: PHP-8.4
-            php-coverage: xdebug
+            php-coverage: none
           - php-branch: PHP-8.3
             php-coverage: none
           - php-branch: PHP-8.2
@@ -108,7 +106,7 @@ jobs:
           path: build
 
       - name: Enable PHP and install Composer
-        run: build/php-composer.sh
+        run: build/php-setup.sh
 
       - name: Install dependencies with Composer
         run: composer install
@@ -116,14 +114,14 @@ jobs:
       - name: Install xdebug
         if: matrix.php-coverage == 'xdebug'
         run: |
-          $PHP_DIR/bin/pecl install xdebug
+          $PHP /usr/local/bin/pie install --with-php-config "${PHP_DIR}/bin/php-config" --skip-enable-extension -j 2 xdebug/xdebug
           echo "zend_extension=xdebug.so" >> "${PHP_DIR}/lib/php.ini"
           echo "XDEBUG_MODE=coverage" >> $GITHUB_ENV
 
       - name: Install pcov
         if: matrix.php-coverage == 'pcov'
         run: |
-          $PHP_DIR/bin/pecl install pcov
+          $PHP /usr/local/bin/pie install --with-php-config "${PHP_DIR}/bin/php-config" --skip-enable-extension -j 2 pecl/pcov
           echo "extension=pcov.so" >> "${PHP_DIR}/lib/php.ini"
 
       - name: Run tests

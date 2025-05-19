@@ -101,7 +101,7 @@ jobs:
           path: build
 
       - name: Enable PHP and install Composer
-        run: build/php-composer.sh
+        run: build/php-setup.sh
 
       - name: Copy build configuration
         if: matrix.db-type != 'sqlite'
