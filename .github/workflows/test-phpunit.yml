@@ -30,7 +30,7 @@ jobs:
       matrix:
         phpunit-branch:
           - main
-          - "12.1"
+          - "12.2"
           - 11.5
           - 10.5
           - 9.6
@@ -53,9 +53,9 @@ jobs:
             php-branch: PHP-8.1
           - phpunit-branch: main
             php-branch: PHP-8.2
-          - phpunit-branch: 12.1
+          - phpunit-branch: 12.2
             php-branch: PHP-8.1
-          - phpunit-branch: 12.1
+          - phpunit-branch: 12.2
             php-branch: PHP-8.2
           - phpunit-branch: "11.5"
             php-branch: PHP-8.1
