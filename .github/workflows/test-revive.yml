@@ -108,7 +108,7 @@ jobs:
         run: build/php-setup.sh
 
       - name: Install dependencies with Composer
-        run: composer install --no-interaction --no-ansi --no-progress
+        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
 
       - name: Generate configuration file
         run: |
