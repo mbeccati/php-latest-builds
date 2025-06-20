@@ -1,0 +1,119 @@
+name: Symfony
+
+on:
+  workflow_run:
+    workflows: [CI]
+    types: [completed]
+  workflow_dispatch:
+    inputs:
+      run_id:
+        description: Workflow run id
+        required: true
+        type: number
+
+permissions:
+  contents: read
+  actions: read
+  checks: write
+
+jobs:
+  test:
+    name: Symfony tests
+
+    if: ${{ github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success' }}
+
+    runs-on: ubuntu-24.04
+    timeout-minutes: 10
+
+    strategy:
+      fail-fast: false
+      matrix:
+        symfony-branch:
+          - 7.2
+          - 7.3
+          - 7.4
+
+        php-branch:
+          - master
+          - PHP-8.4
+          - PHP-8.3
+          - PHP-8.2
+
+    env:
+      PHP_DIR: /opt/${{ matrix.php-branch }}
+      PHP: /opt/${{ matrix.php-branch }}/bin/php
+
+    steps:
+      - name: Setup
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq sqlite3 libicu74
+
+      - name: Install PHP from artifact
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          name: ${{ matrix.php-branch }}
+          path: /opt/${{ matrix.php-branch }}
+          workflow: ${{ github.event.workflow.id || 'CI' }}
+          run_id: ${{ github.event.workflow_run.id || inputs.run_id }}
+
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: symfony/symfony
+          ref: ${{ matrix.symfony-branch }}
+
+      - name: Checkout build configuration
+        uses: actions/checkout@v4
+        with:
+          path: build
+
+      - name: Enable PHP and install Composer
+        run: build/php-setup.sh
+
+      - name: Install dependencies with Composer
+        run: composer install
+
+      - name: Run tests
+        run: $PHP ./phpunit --log-junit junit-${{ matrix.symfony-branch }}-${{ matrix.php-branch }}.xml
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v4
+        if: always() # always run even if the previous step fails
+        with:
+          name: test-results-${{ matrix.symfony-branch }}-${{ matrix.php-branch }}
+          path: 'junit-*.xml'
+          retention-days: 1
+
+  report:
+    name: Collect results
+
+    runs-on: ubuntu-24.04
+
+    needs:
+      - test
+
+    if: always()
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          repository: symfony/symfony
+
+      - name: Download Test Report
+        uses: dawidd6/action-download-artifact@v3
+        with:
+          run_id: ${{ github.run_id }}
+          name: test-results-.*
+          name_is_regexp: true
+          if_no_artifact_found: warn
+          path: test-results
+
+      - name: Publish Test Report
+        uses: mbeccati/test-reporter@phpunit-support
+        with:
+          name: Symfony Test results
+          path: '**/junit-*.xml'
+          reporter: java-junit
+          only-summary: true
