@@ -9,29 +9,30 @@ fi
 ./configure \
         --prefix=$PHP_DIR \
         $PHP_CONF \
-        --with-openssl \
-        --enable-debug \
-        --with-pear \
-        --with-mysqli=mysqlnd \
-        --with-pgsql=/usr \
-        --enable-pdo \
-        --with-pdo-sqlite \
-        --with-pdo-mysql=mysqlnd \
-        --with-pdo-pgsql=/usr \
-        --with-zlib \
-        --with-iconv \
-        --with-xsl \
         --enable-bcmath \
+        --enable-debug \
+        --enable-fpm \
         --enable-ftp \
-        --enable-mbstring \
-        --with-curl \
-        --with-gettext \
         --enable-intl \
-        --enable-sockets \
+        --enable-mbstring \
+        --enable-pcntl \
+        --enable-pdo \
         --enable-shmop \
+        --enable-sockets \
+        --enable-soap \
         --enable-sysvmsg \
         --enable-sysvsem \
         --enable-sysvshm \
-        --enable-soap \
-        --enable-fpm \
-        --enable-pcntl
+        --with-curl \
+        --with-gettext \
+        --with-iconv \
+        --with-mysqli=mysqlnd \
+        --with-openssl \
+        --with-pdo-mysql=mysqlnd \
+        --with-pdo-pgsql=/usr \
+        --with-pdo-sqlite \
+        --with-pgsql=/usr \
+        --with-pear \
+        --with-xsl \
+        --with-zlib \
+        --with-zip

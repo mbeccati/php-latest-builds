@@ -24,17 +24,18 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup
-        run: |
-          sudo apt-get update -qq
-          sudo apt-get install -y -qq bison re2c libpq-dev libcurl4-openssl-dev libonig-dev libsqlite3-dev libxslt1-dev
-
       - name: Checkout PHP
         uses: actions/checkout@v4
         with:
           repository: php/php-src
           ref: ${{ matrix.php-branch }}
           path: build
+
+      - name: Setup
+        run: |
+          sudo apt-get update -qq
+          sudo apt-get install -y -qq bison re2c libpq-dev libcurl4-openssl-dev \
+            libonig-dev libsqlite3-dev libxslt1-dev libzip-dev
 
       - name: Configure
         working-directory: build
