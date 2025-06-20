@@ -20,6 +20,7 @@ fi
         --with-pdo-pgsql=/usr \
         --with-zlib \
         --with-iconv \
+        --with-xsl \
         --enable-bcmath \
         --enable-ftp \
         --enable-mbstring \
