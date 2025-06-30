@@ -18,7 +18,7 @@ permissions:
 
 jobs:
   test:
-    name: DBAL tests
+    name: PIE tests
 
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
 
