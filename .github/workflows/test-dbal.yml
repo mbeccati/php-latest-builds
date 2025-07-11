@@ -29,9 +29,8 @@ jobs:
       fail-fast: false
       matrix:
         dbal-branch:
-          - 3.9.x
-          - 4.2.x
-          - 4.3.x
+          - 3.10.x
+          - 4.4.x
           - 5.0.x
 
         php-branch:
@@ -47,9 +46,9 @@ jobs:
           - mysql
 
         exclude:
-          - dbal-branch: 4.3.x
+          - dbal-branch: 4.4.x
             php-branch: PHP-8.1
-          - dbal-branch: 4.3.x
+          - dbal-branch: 4.4.x
             php-branch: PHP-8.2
           - dbal-branch: 5.0.x
             php-branch: PHP-8.1
