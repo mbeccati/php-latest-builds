@@ -102,6 +102,8 @@ jobs:
 
       - name: Enable PHP and install Composer
         run: build/php-setup.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Copy build configuration
         if: matrix.db-type != 'sqlite'

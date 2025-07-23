@@ -70,6 +70,8 @@ jobs:
 
       - name: Enable PHP and install Composer
         run: build/php-setup.sh
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies with Composer
         run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
