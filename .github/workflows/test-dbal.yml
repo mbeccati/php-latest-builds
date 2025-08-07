@@ -54,6 +54,8 @@ jobs:
             php-branch: PHP-8.1
           - dbal-branch: 5.0.x
             php-branch: PHP-8.2
+          - dbal-branch: 5.0.x
+            php-branch: PHP-8.3
 
     env:
       PHP_DIR: /opt/${{ matrix.php-branch }}
