@@ -80,7 +80,13 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run behavioural tests
-        run: sudo $PHP -d memory_limit=-1 vendor/bin/behat --format junit --out junit-behat-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
+        run: sudo $PHP -d memory_limit=-1 vendor/bin/behat -f progress -o std -f junit -o junit-behat
+
+      - name: Rename behat junit files
+        run: |
+          for i in $(ls junit-behat); do
+            sudo mv junit-behat/$i junit-behat-${{ matrix.pie-branch }}-${{ matrix.php-branch }}-$i
+          done
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
