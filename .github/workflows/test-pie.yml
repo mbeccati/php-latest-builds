@@ -74,10 +74,13 @@ jobs:
       - name: Install dependencies with Composer
         run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
 
-      - name: Run tests
-        run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
+      - name: Run unit tests
+        run: sudo $PHP -d memory_limit=-1 vendor/bin/phpunit --log-junit junit-phpunit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run behavioural tests
+        run: sudo $PHP -d memory_limit=-1 vendor/bin/behat --format junit --out junit-behat-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
