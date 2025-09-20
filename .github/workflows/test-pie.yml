@@ -45,7 +45,7 @@ jobs:
       - name: Setup
         run: |
           sudo apt-get update -qq
-          sudo apt-get install -y -qq sqlite3 libicu74
+          sudo apt-get install -y -qq sqlite3 libicu74 re2c
 
       - name: Install PHP from artifact
         uses: dawidd6/action-download-artifact@v3
