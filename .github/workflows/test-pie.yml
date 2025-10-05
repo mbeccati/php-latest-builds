@@ -83,19 +83,15 @@ jobs:
           time php -i
 
       - name: Install dependencies with Composer
-        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
+        run: php /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
 
       - name: Run unit tests
-        run: |
-          export PATH=/opt/${{ matrix.php-branch }}/bin:$PATH
-          sudo $PHP -d memory_limit=-1 vendor/bin/phpunit --log-junit junit-phpunit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
+        run: sudo php -d memory_limit=-1 vendor/bin/phpunit --log-junit junit-phpunit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Run behavioural tests
-        run: |
-          export PATH=/opt/${{ matrix.php-branch }}/bin:$PATH
-          sudo $PHP -d memory_limit=-1 vendor/bin/behat -f progress -o std -f junit -o junit-behat
+        run: sudo php -d memory_limit=-1 vendor/bin/behat -f progress -o std -f junit -o junit-behat
 
       - name: Rename behat junit files
         run: |
