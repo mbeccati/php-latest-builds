@@ -66,6 +66,8 @@ jobs:
             php-coverage: pcov
           - php-branch: master
             php-coverage: xdebug
+          - php-branch: PHP-8.5 # not ready yet
+            php-coverage: xdebug
           - php-branch: PHP-8.5
             php-coverage: none
           - php-branch: PHP-8.4
