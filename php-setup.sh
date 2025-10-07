@@ -8,6 +8,8 @@ fi
 # Setup PHP executables
 sudo chmod +x $PHP_DIR/bin/*
 
+# Create php.ini
+sudo touch $PHP_DIR/lib/php.ini
 
 # Composer
 EXPECTED_CHECKSUM="$($PHP -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
