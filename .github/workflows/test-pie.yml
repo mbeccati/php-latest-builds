@@ -74,14 +74,11 @@ jobs:
 
       - name: Replace system PHP
         run: |
+          sudo apt remove -y php8.3-cli
+          
           for i in php php-config phpize; do
             sudo update-alternatives --install /usr/bin/$i $i /opt/${{ matrix.php-branch }}/bin/$i 200
           done
-          
-          ls -al /opt/${{ matrix.php-branch }}/bin
-          ls -al /usr/bin/php*
-          
-          time php -i
 
       - name: Install dependencies with Composer
         run: php /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
