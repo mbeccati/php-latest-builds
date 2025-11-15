@@ -92,6 +92,8 @@ jobs:
 
       - name: Run behavioural tests
         run: sudo php -d memory_limit=-1 vendor/bin/behat -f progress -o std -f junit -o junit-behat
+        env:
+          USING_PIE_BEHAT_DOCKERFILE: 1
 
       - name: Rename behat junit files
         run: |
