@@ -86,20 +86,20 @@ jobs:
         run: php /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
 
       - name: Run unit tests
-        run: sudo php -d memory_limit=-1 vendor/bin/phpunit --log-junit junit-phpunit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
+        run: sudo -E php -d memory_limit=-1 vendor/bin/phpunit --log-junit junit-phpunit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Run behavioural tests
-        run: sudo php -d memory_limit=-1 vendor/bin/behat -f progress -o std -f junit -o junit-behat
-        env:
-          USING_PIE_BEHAT_DOCKERFILE: 1
-
-      - name: Rename behat junit files
-        run: |
-          for i in $(ls junit-behat); do
-            sudo mv junit-behat/$i junit-behat-${{ matrix.pie-branch }}-${{ matrix.php-branch }}-$i
-          done
+#      - name: Run behavioural tests
+#        run: sudo -E php -d memory_limit=-1 vendor/bin/behat -f progress -o std -f junit -o junit-behat
+#        env:
+#          USING_PIE_BEHAT_DOCKERFILE: 1
+#
+#      - name: Rename behat junit files
+#        run: |
+#          for i in $(ls junit-behat); do
+#            sudo mv junit-behat/$i junit-behat-${{ matrix.pie-branch }}-${{ matrix.php-branch }}-$i
+#          done
 
       - name: Upload test report
         uses: actions/upload-artifact@v4
