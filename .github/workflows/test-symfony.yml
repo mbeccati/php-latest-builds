@@ -29,8 +29,6 @@ jobs:
       fail-fast: false
       matrix:
         symfony-branch:
-          - 7.2
-          - 7.3
           - 7.4
 
         php-branch:
@@ -116,9 +114,9 @@ jobs:
           path: test-results
 
       - name: Publish Test Report
-        uses: mbeccati/test-reporter@phpunit-support
+        uses: dorny/test-reporter@ff2d13cc3645b6e6978bb229ca7a2a5ea91208c1
         with:
           name: Symfony Test results
           path: '**/junit-*.xml'
-          reporter: java-junit
+          reporter: phpunit-junit
           only-summary: true
