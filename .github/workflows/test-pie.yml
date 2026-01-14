@@ -136,7 +136,7 @@ jobs:
           path: test-results
 
       - name: Publish Test Report
-        uses: dorny/test-reporter@ff2d13cc3645b6e6978bb229ca7a2a5ea91208c1
+        uses: dorny/test-reporter@v2
         with:
           name: PIE Test results
           path: '**/junit-*.xml'
