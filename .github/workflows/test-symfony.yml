@@ -72,8 +72,11 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
+      - name: Copy build configuration
+        run: cp build/symfony/phpunit-${{ matrix.symfony-branch }}.xml phpunit.xml
+
       - name: Install dependencies with Composer
-        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking --no-audit
+        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking
 
       - name: Run tests
         run: |

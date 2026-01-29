@@ -118,7 +118,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies with Composer
-        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking --no-audit
+        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking
 
       - name: Install xdebug
         if: matrix.php-coverage == 'xdebug'
