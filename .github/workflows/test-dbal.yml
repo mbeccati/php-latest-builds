@@ -125,7 +125,7 @@ jobs:
         run: cp build/dbal/phpunit-${{ matrix.db-type }}.xml phpunit.xml
 
       - name: Install dependencies with Composer
-        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
+        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking --no-audit
 
       - name: Run tests
         run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit-${{ matrix.dbal-branch }}-${{ matrix.php-branch }}-${{ matrix.db-type }}.xml

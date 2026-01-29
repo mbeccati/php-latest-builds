@@ -111,7 +111,7 @@ jobs:
         run: cp build/doctrine/phpunit-${{ matrix.db-type }}-${{ matrix.doctrine-branch }}.xml phpunit.xml
 
       - name: Install dependencies with Composer
-        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
+        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking --no-audit
 
       - name: Run tests
         run: $PHP -d memory_limit=1G vendor/bin/phpunit --log-junit junit-${{ matrix.doctrine-branch }}-${{ matrix.php-branch }}-${{ matrix.db-type }}.xml

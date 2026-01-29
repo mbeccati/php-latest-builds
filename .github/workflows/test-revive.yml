@@ -111,7 +111,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Install dependencies with Composer
-        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
+        run: $PHP /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking --no-audit
 
       - name: Generate configuration file
         run: |

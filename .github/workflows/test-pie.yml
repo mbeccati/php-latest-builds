@@ -84,7 +84,7 @@ jobs:
           php-config --prefix
 
       - name: Install dependencies with Composer
-        run: php /usr/local/bin/composer install --no-interaction --no-ansi --no-progress
+        run: php /usr/local/bin/composer install --no-interaction --no-ansi --no-progress --no-security-blocking --no-audit
 
       - name: Run unit tests
         run: sudo -E php -d memory_limit=-1 vendor/bin/phpunit --log-junit junit-phpunit-${{ matrix.pie-branch }}-${{ matrix.php-branch }}.xml
