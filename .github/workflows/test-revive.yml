@@ -186,4 +186,5 @@ jobs:
           name: Revive Adserver Test results
           path: '**/build/test-reports/*.xml'
           reporter: phpunit-junit
-          only-summary: true
+          list-suites: failed
+          list-tests: failed

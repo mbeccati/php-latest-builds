@@ -175,4 +175,5 @@ jobs:
           name: PHPUnit Test results
           path: '**/junit-*.xml'
           reporter: phpunit-junit
-          only-summary: true
+          list-suites: failed
+          list-tests: failed
