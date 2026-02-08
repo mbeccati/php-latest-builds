@@ -30,11 +30,10 @@ jobs:
       matrix:
         phpunit-branch:
           - main
+          - "13.0"
           - "12.5"
           - "11.5"
           - "10.5"
-          - "9.6"
-          - "8.5"
 
         php-branch:
           - master
@@ -55,6 +54,12 @@ jobs:
           - phpunit-branch: main
             php-branch: PHP-8.2
           - phpunit-branch: main
+            php-branch: PHP-8.3
+          - phpunit-branch: "13.0"
+            php-branch: PHP-8.1
+          - phpunit-branch: "13.0"
+            php-branch: PHP-8.2
+          - phpunit-branch: "13.0"
             php-branch: PHP-8.3
           - phpunit-branch: "12.5"
             php-branch: PHP-8.1
@@ -78,10 +83,6 @@ jobs:
             php-coverage: none
           - php-branch: PHP-8.1
             php-coverage: none
-
-          # Build unexpectedly fails, see: https://github.com/sebastianbergmann/phpunit/issues/6128
-          - php-branch: PHP-8.2
-            php-coverage: xdebug
 
     env:
       PHP_DIR: /opt/${{ matrix.php-branch }}
