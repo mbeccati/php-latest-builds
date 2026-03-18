@@ -30,6 +30,7 @@ jobs:
       matrix:
         pie-branch:
           - "1.4.x"
+          - "1.3.x"
 
         php-branch:
           - PHP-8.5
