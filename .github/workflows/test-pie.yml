@@ -30,6 +30,7 @@ jobs:
       matrix:
         pie-branch:
           - "1.4.x"
+          - "538-fix-phpize-build-tool-finder-api-verison-check-test"
 
         php-branch:
           - PHP-8.5
