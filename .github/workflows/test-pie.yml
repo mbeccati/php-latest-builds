@@ -29,8 +29,7 @@ jobs:
       fail-fast: false
       matrix:
         pie-branch:
-          #- "1.4.x"
-          - "538-fix-phpize-build-tool-finder-api-verison-check-test"
+          - "1.4.x"
 
         php-branch:
           - PHP-8.5
@@ -60,8 +59,7 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
         with:
-#          repository: php/pie
-          repository: asgrim/pie
+          repository: php/pie
           ref: ${{ matrix.pie-branch }}
 
       - name: Checkout build configuration
