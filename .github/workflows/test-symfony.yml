@@ -35,8 +35,6 @@ jobs:
           - master
           - PHP-8.5
           - PHP-8.4
-          - PHP-8.3
-          - PHP-8.2
 
     env:
       PHP_DIR: /opt/${{ matrix.php-branch }}
