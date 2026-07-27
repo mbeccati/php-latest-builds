@@ -9,7 +9,9 @@ fi
 sudo chmod +x $PHP_DIR/bin/*
 
 # Create php.ini
-sudo touch $PHP_DIR/lib/php.ini
+sudo cat > $PHP_DIR/lib/php.ini <<EOF
+memory_limit=-1
+EOF
 
 # Composer
 EXPECTED_CHECKSUM="$($PHP -r 'copy("https://composer.github.io/installer.sig", "php://stdout");')"
