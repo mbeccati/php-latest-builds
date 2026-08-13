@@ -50,23 +50,15 @@ jobs:
 
         exclude:
           - phpunit-branch: main
-            php-branch: PHP-8.1
-          - phpunit-branch: main
             php-branch: PHP-8.2
           - phpunit-branch: main
             php-branch: PHP-8.3
-          - phpunit-branch: "13.3"
-            php-branch: PHP-8.1
           - phpunit-branch: "13.3"
             php-branch: PHP-8.2
           - phpunit-branch: "13.3"
             php-branch: PHP-8.3
           - phpunit-branch: "12.5"
-            php-branch: PHP-8.1
-          - phpunit-branch: "12.5"
             php-branch: PHP-8.2
-          - phpunit-branch: "11.5"
-            php-branch: PHP-8.1
           - php-branch: master
             php-coverage: pcov
           - php-branch: master
@@ -80,8 +72,6 @@ jobs:
           - php-branch: PHP-8.3
             php-coverage: none
           - php-branch: PHP-8.2
-            php-coverage: none
-          - php-branch: PHP-8.1
             php-coverage: none
 
     env:

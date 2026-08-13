@@ -31,6 +31,7 @@ jobs:
         dbal-branch:
           - 3.10.x
           - 4.4.x
+          - 4.5.x
           - 5.0.x
 
         php-branch:
@@ -39,7 +40,6 @@ jobs:
           - PHP-8.4
           - PHP-8.3
           - PHP-8.2
-          - PHP-8.1
 
         db-type:
           - sqlite
@@ -47,12 +47,12 @@ jobs:
           - mysql
 
         exclude:
-          - dbal-branch: 4.4.x
-            php-branch: PHP-8.1
+          - dbal-branch: 3.10.x
+            php-branch: master
           - dbal-branch: 4.4.x
             php-branch: PHP-8.2
-          - dbal-branch: 5.0.x
-            php-branch: PHP-8.1
+          - dbal-branch: 4.5.x
+            php-branch: PHP-8.2
           - dbal-branch: 5.0.x
             php-branch: PHP-8.2
           - dbal-branch: 5.0.x
