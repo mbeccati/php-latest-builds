@@ -30,7 +30,7 @@ jobs:
       matrix:
         doctrine-branch:
           - 2.20.x
-          - 3.6.x
+          - 3.7.x
 
         php-branch:
           - master
