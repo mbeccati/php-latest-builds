@@ -29,8 +29,8 @@ jobs:
       fail-fast: false
       matrix:
         pie-branch:
+          - "1.6.x"
           - "1.5.x"
-          - "1.4.x"
 
         php-branch:
           - master
