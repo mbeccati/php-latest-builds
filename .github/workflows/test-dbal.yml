@@ -30,7 +30,6 @@ jobs:
       matrix:
         dbal-branch:
           - 3.10.x
-          - 4.4.x
           - 4.5.x
           - 5.0.x
 
@@ -50,8 +49,6 @@ jobs:
         exclude:
           - dbal-branch: 3.10.x
             php-branch: master
-          - dbal-branch: 4.4.x
-            php-branch: PHP-8.2
           - dbal-branch: 4.5.x
             php-branch: PHP-8.2
           - dbal-branch: 5.0.x
