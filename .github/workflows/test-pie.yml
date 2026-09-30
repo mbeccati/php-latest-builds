@@ -33,7 +33,6 @@ jobs:
           - "1.5.x"
 
         php-branch:
-          - master
           - PHP-8.6
           - PHP-8.5
           - PHP-8.4
