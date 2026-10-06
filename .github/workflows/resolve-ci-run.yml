@@ -1,0 +1,40 @@
+name: Resolve CI run
+
+on:
+  workflow_call:
+    outputs:
+      run_id:
+        description: CI run ID to download artifacts from
+        value: ${{ jobs.resolve.outputs.run_id }}
+
+permissions:
+  actions: read
+
+jobs:
+  resolve:
+    name: Resolve
+    runs-on: ubuntu-24.04
+    outputs:
+      run_id: ${{ steps.resolve.outputs.run_id }}
+    steps:
+      - name: Resolve run ID
+        id: resolve
+        env:
+          GH_TOKEN: ${{ github.token }}
+          EVENT_RUN_ID: ${{ github.event.workflow_run.id }}
+          INPUT_RUN_ID: ${{ github.event.inputs.run_id }}
+        run: |
+          if [[ -n "$EVENT_RUN_ID" ]]; then
+            run_id="$EVENT_RUN_ID"
+          elif [[ -n "$INPUT_RUN_ID" ]]; then
+            run_id="$INPUT_RUN_ID"
+          else
+            run_id="$(gh api "repos/${GITHUB_REPOSITORY}/actions/workflows/ci.yml/runs?per_page=1" --jq '.workflow_runs[0].id')"
+          fi
+
+          if [[ ! "$run_id" =~ ^[0-9]+$ ]]; then
+            echo "No CI run found" >&2
+            exit 1
+          fi
+
+          echo "run_id=$run_id" >> "$GITHUB_OUTPUT"

@@ -7,8 +7,8 @@ on:
   workflow_dispatch:
     inputs:
       run_id:
-        description: Workflow run id
-        required: true
+        description: Workflow Run ID (autodetect if empty)
+        required: false
         type: number
 
 permissions:
@@ -17,8 +17,14 @@ permissions:
   checks: write
 
 jobs:
+  resolve-run:
+    name: Resolve CI run
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    uses: ./.github/workflows/resolve-ci-run.yml
+
   test:
     name: DBAL tests
+    needs: resolve-run
 
     if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
 
@@ -100,7 +106,7 @@ jobs:
           name: ${{ matrix.php-branch }}
           path: /opt/${{ matrix.php-branch }}
           workflow: ${{ github.event.workflow.id || 'CI' }}
-          run_id: ${{ github.event.workflow_run.id || inputs.run_id }}
+          run_id: ${{ needs.resolve-run.outputs.run_id }}
 
       - name: Checkout
         uses: actions/checkout@v4
