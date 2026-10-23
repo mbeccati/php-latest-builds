@@ -59,6 +59,8 @@ jobs:
             php-branch: PHP-8.2
           - phpunit-branch: main
             php-branch: PHP-8.3
+          - phpunit-branch: main
+            php-branch: PHP-8.4
           - phpunit-branch: "13.4"
             php-branch: PHP-8.2
           - phpunit-branch: "13.4"
