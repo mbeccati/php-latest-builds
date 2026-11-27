@@ -172,12 +172,9 @@ jobs:
           repository: revive-adserver/revive-adserver
 
       - name: Download Test Report
-        uses: dawidd6/action-download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
-          run_id: ${{ github.run_id }}
-          name: test-results-.*
-          name_is_regexp: true
-          if_no_artifact_found: warn
+          pattern: test-results-*
 
       - name: Publish Test Report
         uses: dorny/test-reporter@v2
